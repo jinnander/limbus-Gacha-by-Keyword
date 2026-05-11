@@ -2,72 +2,137 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>키워드별 인격 뽑기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>림버스 컴퍼니 키워드 뽑기</title>
     <style>
+        /* 림버스 컴퍼니 테마 디자인 */
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #1a1a1a;
+            --card-bg: #262626;
+            --text-main: #e0e0e0;
+            --text-sub: #888;
+        }
+
         body {
-            background-color: #1a1a1a;
-            color: #e0e0e0;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
             font-family: 'Malgun Gothic', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
         }
+
         .container {
             text-align: center;
-            border: 2px solid #d4af37;
-            padding: 30px;
-            background-color: #262626;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-            border-radius: 10px;
+            border: 2px solid var(--gold);
+            padding: 40px;
+            background-color: var(--card-bg);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
         }
-        h1 { color: #d4af37; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
-        .controls { margin-bottom: 20px; }
+
+        h1 { 
+            color: var(--gold); 
+            margin-bottom: 25px; 
+            letter-spacing: 3px;
+            font-size: 2rem;
+        }
+
+        .controls { 
+            margin-bottom: 30px; 
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
         select {
-            padding: 10px;
+            padding: 12px;
             background: #333;
             color: white;
-            border: 1px solid #d4af37;
+            border: 1px solid var(--gold);
             border-radius: 4px;
+            cursor: pointer;
+            outline: none;
         }
+
         button {
-            padding: 10px 25px;
-            background-color: #d4af37;
+            padding: 12px 24px;
+            background-color: var(--gold);
             color: black;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            margin-left: 10px;
-            border-radius: 4px;
+            transition: all 0.2s;
         }
-        button:hover { background-color: #f1c40f; }
+
+        button:hover { 
+            background-color: #f1c40f;
+            transform: translateY(-2px);
+        }
+
         #result {
-            margin-top: 30px;
-            min-height: 120px;
+            margin-top: 20px;
+            padding: 20px;
+            min-height: 150px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             border-top: 1px solid #444;
-            width: 100%;
         }
-        .rarity-3 { color: #ff3e3e; text-shadow: 0 0 10px rgba(255, 62, 62, 0.5); font-size: 1.8rem; }
+
+        .sinner-name { 
+            font-size: 1.1rem; 
+            color: var(--text-sub); 
+            margin-bottom: 10px; 
+        }
+
+        .identity-name { 
+            font-weight: bold;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .rarity-3 { color: #ff3e3e; text-shadow: 0 0 10px rgba(255, 62, 62, 0.4); font-size: 1.8rem; }
         .rarity-2 { color: #ffae00; font-size: 1.5rem; }
         .rarity-1 { color: #ffffff; font-size: 1.2rem; }
-        .sinner-name { font-size: 1.1rem; color: #aaa; margin-bottom: 8px; }
+
+        .keyword-tags {
+            margin-top: 15px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tag {
+            font-size: 0.8rem;
+            color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .empty-msg { color: var(--text-sub); font-style: italic; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Limbus Company</h1>
-        <p>키워드를 선택하고 인격을 뽑으세요.</p>
+        <h1>LIMBUS COMPANY</h1>
+        <p style="margin-bottom: 20px; font-size: 0.9rem;">키워드를 선택하고 인격을 뽑으세요.</p>
 
         <div class="controls">
             <select id="keywordSelect">
-                <option value="전체">전체</option>
+                <option value="전체">전체 키워드</option>
                 <option value="출혈">출혈</option>
                 <option value="호흡">호흡</option>
                 <option value="파열">파열</option>
@@ -80,50 +145,61 @@
         </div>
 
         <div id="result">
-            <div id="resultText">관리자님, 인격을 뽑으세요.</div>
+            <div id="resultContent">
+                <p class="empty-msg">관리자님, 준비가 되었습니다.</p>
+            </div>
         </div>
     </div>
 
     <script>
-        // 키워드(keyword) 속성을 추가하여 데이터 업데이트
+        // 인격 데이터베이스 (듀얼 키워드 지원)
         const identities = [
-            { name: "남부 섕크 협회 4과", sinner: "싱클레어", rarity: 3, keyword: "호흡" },
-            { name: "검계 살수", sinner: "이상", rarity: 3, keyword: "호흡" },
-            { name: "쥐는 자", sinner: "파우스트", rarity: 3, keyword: "출혈" },
-            { name: "N사 중간 망치", sinner: "돈키호테", rarity: 2, keyword: "출혈" },
-            { name: "W사 3정리요원", sinner: "돈키호테", rarity: 3, keyword: "충전" },
-            { name: "R사 제 4무리 토끼팀", sinner: "히스클리프", rarity: 3, keyword: "충전" },
-            { name: "리우 협회 4과", sinner: "이슈마엘", rarity: 3, keyword: "화상" },
-            { name: "어금니 사무소 해결사", sinner: "오티스", rarity: 3, keyword: "진동" },
-            { name: "해녀", sinner: "이슈마엘", rarity: 2, keyword: "침잠" },
-            { name: "세븐 협회 6과", sinner: "이상", rarity: 2, keyword: "파열" }
+            { name: "검계 살수", sinner: "이상", rarity: 3, keywords: ["호흡"] },
+            { name: "남부 섕크 협회 4과", sinner: "싱클레어", rarity: 3, keywords: ["호흡"] },
+            { name: "쥐는 자", sinner: "파우스트", rarity: 3, keywords: ["출혈"] },
+            { name: "W사 3정리요원", sinner: "돈키호테", rarity: 3, keywords: ["충전", "파열"] },
+            { name: "R사 제 4무리 토끼팀", sinner: "히스클리프", rarity: 3, keywords: ["충전", "출혈"] },
+            { name: "어금니 사무소 해결사", sinner: "이슈마엘", rarity: 3, keywords: ["진동", "파열"] },
+            { name: "리우 협회 4과", sinner: "홍루", rarity: 2, keywords: ["화상"] },
+            { name: "남부 디에치 협회 4과", sinner: "로쟈", rarity: 3, keywords: ["침잠"] },
+            { name: "세븐 협회 6과", sinner: "오티스", rarity: 2, keywords: ["파열"] },
+            { name: "외곽 유로지비", sinner: "홍루", rarity: 3, keywords: ["진동", "파열"] }
+            // 여기에 인격을 계속 추가하면 됩니다!
         ];
 
         function extractIdentity() {
             const selectedKeyword = document.getElementById('keywordSelect').value;
-            const resultDiv = document.getElementById('resultText');
+            const resultContent = document.getElementById('resultContent');
             
+            // 필터링 로직 (배열 내 포함 여부 확인)
             let filtered = [];
             if (selectedKeyword === "전체") {
                 filtered = identities;
             } else {
-                // i.faction 대신 i.keyword로 필터링하도록 수정
-                filtered = identities.filter(i => i.keyword === selectedKeyword);
+                filtered = identities.filter(i => i.keywords.includes(selectedKeyword));
             }
 
+            // 결과 출력
             if (filtered.length > 0) {
                 const randomIdx = Math.floor(Math.random() * filtered.length);
                 const pick = filtered[randomIdx];
 
-                resultDiv.innerHTML = `
+                // 태그 HTML 생성
+                const tagsHtml = pick.keywords.map(k => `<span class="tag">#${k}</span>`).join('');
+
+                resultContent.innerHTML = `
                     <div class="sinner-name">[${pick.sinner}]</div>
-                    <div class="rarity-${pick.rarity}">
-                        ${"★".repeat(pick.rarity)} ${pick.name}
+                    <div class="identity-name rarity-${pick.rarity}">
+                        ${"★".repeat(pick.rarity)}<br>${pick.name}
                     </div>
-                    <div style="font-size: 0.9rem; color: #666; mt-2">#${pick.keyword}</div>
+                    <div class="keyword-tags">
+                        ${tagsHtml}
+                    </div>
                 `;
             } else {
-                resultDiv.innerHTML = `<div style="color: #888;">아직 '${selectedKeyword}' 키워드의 데이터가 입력되지 않았습니다.</div>`;
+                resultContent.innerHTML = `
+                    <p class="empty-msg">'${selectedKeyword}' 키워드를 가진 인격을<br>찾을 수 없습니다.</p>
+                `;
             }
         }
     </script>
