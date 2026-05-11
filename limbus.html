@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>림버스 컴퍼니 인격 추출기</title>
+    <style>
+        /* 림버스 느낌의 어두운 테마 */
+        body {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            font-family: 'Malgun Gothic', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            border: 2px solid #d4af37;
+            padding: 30px;
+            background-color: #262626;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        h1 { color: #d4af37; margin-bottom: 20px; }
+
+        .controls { margin-bottom: 20px; }
+
+        select {
+            padding: 10px;
+            background: #333;
+            color: white;
+            border: 1px solid #d4af37;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #d4af37;
+            color: black;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #f1c40f; }
+
+        #result {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .rarity-3 { color: #ff3e3e; text-shadow: 0 0 10px rgba(255, 62, 62, 0.5); }
+        .rarity-2 { color: #ffae00; }
+        .rarity-1 { color: #ffffff; }
+
+        .sinner-name { font-size: 1rem; color: #aaa; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Limbus Company</h1>
+        <p>키워드를 선택하고 인격을 추출하십시오.</p>
+
+        <div class="controls">
+            <select id="keywordSelect">
+                <option value="전체">전체 소속</option>
+                <option value="검계">검계</option>
+                <option value="W사">W사</option>
+                <option value="R사">R사</option>
+                <option value="N사">N사</option>
+                <option value="해결사">해결사</option>
+            </select>
+            <button onclick="extractIdentity()">추출 개시</button>
+        </div>
+
+        <div id="result">
+            <div id="resultText">준비 완료...</div>
+        </div>
+    </div>
+
+    <script>
+        // 데이터 샘플 (실제 데이터로 확장 가능)
+        const identities = [
+            { name: "검계 살수", sinner: "이상", rarity: 3, faction: "검계" },
+            { name: "검계 귀살", sinner: "싱클레어", rarity: 2, faction: "검계" },
+            { name: "W사 2정리요원", sinner: "파우스트", rarity: 2, faction: "W사" },
+            { name: "W사 3정리요원", sinner: "돈키호테", rarity: 3, faction: "W사" },
+            { name: "R사 제 4무리 토끼팀", sinner: "히스클리프", rarity: 3, faction: "R사" },
+            { name: "N사 중간 망치", sinner: "돈키호테", rarity: 2, faction: "N사" },
+            { name: "쥐는 자", sinner: "파우스트", rarity: 3, faction: "N사" },
+            { name: "남부 치프틴", sinner: "이스마엘", rarity: 2, faction: "해결사" }
+        ];
+
+        function extractIdentity() {
+            const selectedKeyword = document.getElementById('keywordSelect').value;
+            const resultDiv = document.getElementById('resultText');
+            
+            // 필터링 로직
+            let filtered = [];
+            if (selectedKeyword === "전체") {
+                filtered = identities;
+            } else {
+                filtered = identities.filter(i => i.faction === selectedKeyword);
+            }
+
+            // 랜덤 추출
+            if (filtered.length > 0) {
+                const randomIdx = Math.floor(Math.random() * filtered.length);
+                const pick = filtered[randomIdx];
+
+                // 화면 표시
+                resultDiv.innerHTML = `
+                    <div class="sinner-name">[${pick.sinner}]</div>
+                    <div class="rarity-${pick.rarity}">${"★".repeat(pick.rarity)} ${pick.name}</div>
+                `;
+            } else {
+                resultDiv.innerHTML = "해당 키워드의 인격이 없습니다.";
+            }
+        }
+    </script>
+</body>
+</html>
