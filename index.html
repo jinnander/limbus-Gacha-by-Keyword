@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>림버스 컴퍼니 인격 추출기</title>
+    <title>키워드별 인격 뽑기</title>
     <style>
         /* 림버스 느낌의 어두운 테마 */
         body {
@@ -68,16 +68,17 @@
 
     <div class="container">
         <h1>Limbus Company</h1>
-        <p>키워드를 선택하고 인격을 추출하십시오.</p>
+        <p>키워드 선택.</p>
 
         <div class="controls">
             <select id="keywordSelect">
-                <option value="전체">전체 소속</option>
-                <option value="검계">검계</option>
-                <option value="W사">W사</option>
-                <option value="R사">R사</option>
-                <option value="N사">N사</option>
-                <option value="해결사">해결사</option>
+                <option value="출혈">출혈</option>
+                <option value="호흡">호흡</option>
+                <option value="파열">파열</option>
+                <option value="화상">화상</option>
+                <option value="충전">충전</option>
+                <option value="침잠">침잠</option>
+                <option value="진동">진동</option>
             </select>
             <button onclick="extractIdentity()">추출 개시</button>
         </div>
